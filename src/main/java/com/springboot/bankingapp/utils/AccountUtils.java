@@ -3,26 +3,50 @@ package com.springboot.bankingapp.utils;
 import java.time.Year;
 
 public class AccountUtils {
+    public static final String ACCOUNT_EXISTS_CODE = "001";
 
-    /** el número de cuenta se selecciona de manera aleatoria concatenando el año actual y 6 dígitos random
-      2025 + randomSixDigits
+    public static final String ACCOUNT_EXISTS_MESSAGE = "This user already has an account";
 
-     el número random de 6 dígitos va a estar entre 100000 y 999999 (sin tomar esos dos valores)
-     */
+    public static final String ACCOUNT_CREATION_SUCCESS = "002";
 
-    //ontener el valor del año actual
-    Year currentYear = Year.now();
-    int min = 100000;
-    int max = 999999;
+    public static final String ACCOUNT_CREATION_MESSAGE = "Account has been successfully created";
 
-    //generar un número aleatorio antre el mínimo y el máximo
-    // el método random crea un número aleatorio entre 0 y 9
+    public static final String ACCOUNT_NOT_EXIST_CODE = "003";
 
-    //(int) convierte el valor de double a integer (casting)
-    int randNumber = (int) Math.floor(Math.random() * (max - min + 1) + min);
+    public static final String ACCOUNT_NOT_EXIST_MESSAGE = "The user with the provided account number does not exist";
 
-    //convertir el valor de currentYear y randomNumber a string para poder concatenarlos
 
-    String year = String.valueOf(currentYear);
+    public static String generateAccountNumber() {
+        /** el número de cuenta se selecciona de manera aleatoria concatenando el año actual y 6 dígitos random
+         2025 + randomSixDigits
+
+         el número random de 6 dígitos va a estar entre 100000 y 999999 (sin tomar esos dos valores)
+         */
+
+        //ontener el valor del año actual
+        Year currentYear = Year.now();
+        int min = 100000;
+        int max = 999999;
+
+        //generar un número aleatorio antre el mínimo y el máximo
+        // el método random crea un número aleatorio entre 0 y 9
+
+        //(int) convierte el valor de double a integer (casting)
+        int randNumber = (int) Math.floor(Math.random() * (max - min + 1) + min);
+
+        /** con esto el algoritmo va a asumir que el número de cuenta va a tener 10 dígitos
+         y nunca va a cambiar **/
+
+
+        //convertir el valor de currentYear y randomNumber a string para poder concatenarlos
+
+        String year = String.valueOf(currentYear);
+
+        String randomNumber = String.valueOf(randNumber);
+
+        StringBuilder accountNumber = new StringBuilder();
+
+        return accountNumber.append(year).append(randomNumber).toString();
+    }
 
 }

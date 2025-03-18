@@ -21,7 +21,7 @@ public class User {
     @Id //primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String fistName;
+    private String firstName;
     private String lastName;
     private String otherName;
     private String gender;
