@@ -24,14 +24,14 @@ public class UserServiceImpl implements UserService {
     public BankResponse createAccount(UserRequest userRequest) {
         /**al crear una cuenta, se guarda un nuevo usuario con sus respectivos datos en la db,
          la entidad User representa los campos en la base de datos
-        **/
+         **/
 
-        if(userRepository.existsByEmail(userRequest.getEmail())) {
-               return   BankResponse.builder()
-                        .responseCode(AccountUtils.ACCOUNT_EXISTS_CODE)
-                        .responseMessage(AccountUtils.ACCOUNT_EXISTS_MESSAGE)
-                        .accountInfo(null)
-                        .build();
+        if (userRepository.existsByEmail(userRequest.getEmail())) {
+            return BankResponse.builder()
+                    .responseCode(AccountUtils.ACCOUNT_EXISTS_CODE)
+                    .responseMessage(AccountUtils.ACCOUNT_EXISTS_MESSAGE)
+                    .accountInfo(null)
+                    .build();
         }
         User newUser = User.builder()
                 .firstName(userRequest.getFirstName())
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
                 .recipient((savedUser.getEmail()))
                 .subject("ACCOUNT CREATION")
                 .messageBody("Congratulations, your account has been successfully created. \n Your account details: \n" +
-                        "Account name: " + savedUser.getFirstName() + " " + savedUser.getLastName() + " " + savedUser.getOtherName() + "\n  Account number: " + savedUser.getAccountNumber() )
+                        "Account name: " + savedUser.getFirstName() + " " + savedUser.getLastName() + " " + savedUser.getOtherName() + "\n  Account number: " + savedUser.getAccountNumber())
                 .build();
         emailService.sendEmailAlert(emailDetails);
         return BankResponse.builder()
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
     public BankResponse balanceEnquiry(EnquiryRequest request) {
         //comprobar si existe el número de cuenta en la base de datos
         boolean accountExists = userRepository.existsByAccountNumber(request.getAccountNumber());
-        if(!accountExists) {
+        if (!accountExists) {
             return BankResponse.builder()
                     .responseCode(AccountUtils.ACCOUNT_NOT_EXIST_CODE)
                     .responseMessage(AccountUtils.ACCOUNT_NOT_EXIST_MESSAGE)
@@ -90,14 +90,26 @@ public class UserServiceImpl implements UserService {
 
         //si la cuenta sí existe:
 
-        User
-
+        User foundUser = userRepository.findByAccountNumber(request.getAccountNumber());
+        return BankResponse.builder()
+                .responseCode(AccountUtils.ACCOUNT_FOUND_CODE)
+                .responseMessage(AccountUtils.ACCOUNT_FOUND_SUCCESS)
+                .accountInfo(AccountInfo.builder()
+                        .accountBalance(foundUser.getAccountBalance())
+                        .accountNumber(request.getAccountNumber())
+                        .accountName(foundUser.getFirstName() + " " + foundUser.getLastName() + " " + foundUser.getOtherName())
+                        .build())
+                .build();
     }
 
     @Override
     public String nameEnquiry(EnquiryRequest request) {
-        return "";
+        boolean accountExists = userRepository.existsByAccountNumber(request.getAccountNumber());
+        if (!accountExists) {
+            return AccountUtils.ACCOUNT_NOT_EXIST_MESSAGE;
+        }
+        User foundUser = userRepository.findByAccountNumber(request.getAccountNumber());
+        return foundUser.getFirstName() + " " + foundUser.getLastName() + " " + foundUser.getOtherName();
     }
-
 
 }

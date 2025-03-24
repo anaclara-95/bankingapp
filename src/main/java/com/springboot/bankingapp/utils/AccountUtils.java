@@ -15,6 +15,9 @@ public class AccountUtils {
 
     public static final String ACCOUNT_NOT_EXIST_MESSAGE = "The user with the provided account number does not exist";
 
+    public static final String ACCOUNT_FOUND_CODE = "004";
+
+    public static final String ACCOUNT_FOUND_SUCCESS = "User account found";
 
     public static String generateAccountNumber() {
         /** el número de cuenta se selecciona de manera aleatoria concatenando el año actual y 6 dígitos random
