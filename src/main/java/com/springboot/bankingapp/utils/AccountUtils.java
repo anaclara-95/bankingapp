@@ -19,6 +19,11 @@ public class AccountUtils {
 
     public static final String ACCOUNT_FOUND_SUCCESS = "User account found";
 
+    public static final String ACCOUNT_CREDITED_SUCCESS = "005";
+
+    public static final String ACCOUNT_CREDITED_SUCCESS_MESSAGE = "User account credited";
+
+
     public static String generateAccountNumber() {
         /** el número de cuenta se selecciona de manera aleatoria concatenando el año actual y 6 dígitos random
          2025 + randomSixDigits

@@ -1,6 +1,7 @@
 package com.springboot.bankingapp.controller;
 
 import com.springboot.bankingapp.dto.BankResponse;
+import com.springboot.bankingapp.dto.CreditDebitRequest;
 import com.springboot.bankingapp.dto.EnquiryRequest;
 import com.springboot.bankingapp.dto.UserRequest;
 import com.springboot.bankingapp.service.impl.UserService;
@@ -30,4 +31,9 @@ public class UserController {
         return userService.nameEnquiry(request);
      }
 
+
+     @GetMapping("credit")
+    public BankResponse creditAccount(@RequestBody CreditDebitRequest request) {
+        return userService.creditAccount(request);
+     }
 }
