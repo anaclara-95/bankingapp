@@ -23,6 +23,14 @@ public class AccountUtils {
 
     public static final String ACCOUNT_CREDITED_SUCCESS_MESSAGE = "User account credited";
 
+    public static final String INSUFFICIENT_BALANCE_CODE = "006";
+
+    public static final String INSUFFICIENT_BALANCE_MESSAGE = "Insufficient balance";
+
+    public static final String ACCOUNT_DEBITED_SUCCESS = "007";
+
+    public static final String ACCOUNT_DEBITED_MESSAGE = "Account has been successfully debited";
+
 
     public static String generateAccountNumber() {
         /** el número de cuenta se selecciona de manera aleatoria concatenando el año actual y 6 dígitos random
@@ -31,7 +39,7 @@ public class AccountUtils {
          el número random de 6 dígitos va a estar entre 100000 y 999999 (sin tomar esos dos valores)
          */
 
-        //ontener el valor del año actual
+        //obtener el valor del año actual
         Year currentYear = Year.now();
         int min = 100000;
         int max = 999999;
