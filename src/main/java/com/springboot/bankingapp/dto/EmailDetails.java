@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 
 public class EmailDetails {
-   private String recipient; //es el mail del usuuario creado (a quien se le envía el mail)
+   private String recipient; //es el mail del usuario creado (a quien se le envía el mail)
    private String messageBody;
    private String subject;
    private String attachment;
