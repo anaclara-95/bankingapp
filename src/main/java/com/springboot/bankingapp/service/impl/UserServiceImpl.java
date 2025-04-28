@@ -187,7 +187,7 @@ public class UserServiceImpl implements UserService {
         //abtener la cuenta a acreditar y verificar que exista
         //comprobar que la contidad que quiero debitar no sea mayor al saldo de la cuenta de origen (sourceAccount)
         //acreditar la cuenta
-       //no se necesita comprobar que sourceAccount (la cuenta a debitar) exista porque el usuario está logueado (el usuario es la cuenta de origen)
+        //no se necesita comprobar que sourceAccount (la cuenta a debitar) exista porque el usuario está logueado (el usuario es la cuenta de origen)
         boolean destinationAccountExists = userRepository.existsByAccountNumber(request.getDestinationAccountNumber());
         if (!destinationAccountExists) { //si la cuenta a acreditar no existe, muestra un mensaje de error
             return BankResponse.builder()
@@ -225,10 +225,10 @@ public class UserServiceImpl implements UserService {
 
         User destinationAccountUser = userRepository.findByAccountNumber(request.getDestinationAccountNumber());
         destinationAccountUser.setAccountBalance(destinationAccountUser.getAccountBalance().add(request.getAmount())); //se usa el método add para sumarle a la cuenta destino la cantidad que se le acaba de debitar a la cuenta de origen, y así la tranferencia queda completada
-        String recipientUsername = destinationAccountUser.getFirstName() + " " + destinationAccountUser.getLastName() + " " + destinationAccountUser.getOtherName();
+        //String recipientUsername = destinationAccountUser.getFirstName() + " " + destinationAccountUser.getLastName() + " " + destinationAccountUser.getOtherName();
         userRepository.save(destinationAccountUser);
 
-        EmailDetails crebitAlert = EmailDetails.builder()
+        EmailDetails creditAlert = EmailDetails.builder()
                 .subject("CREBIT ALERT")
                 .recipient(sourceAccountUser.getEmail())
                 .messageBody("The sum of " + request.getAmount() + " has been sent to your account from " + sourceUsername + " Your current balance is " + destinationAccountUser.getAccountBalance())
@@ -237,7 +237,10 @@ public class UserServiceImpl implements UserService {
         emailService.sendEmailAlert(debitAlert);
 
         return BankResponse.builder()
-                .build()
+                .responseCode(AccountUtils.TRANSFER_SUCCESSFUL_CODE)
+                .responseMessage(AccountUtils.TRANSFER_SUCCESSFUL_MESSAGE)
+                .accountInfo(null)
+                .build();
 
     }
 }

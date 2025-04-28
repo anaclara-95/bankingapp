@@ -1,6 +1,6 @@
 package com.springboot.bankingapp.dto;
 
-//transfer credita y debita al mismo tiempo a partir de una API
+//transfer acredita y debita al mismo tiempo a partir de una API
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
