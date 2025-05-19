@@ -21,6 +21,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    TransactionService transactionService;
+
     @Override
     public BankResponse createAccount(UserRequest userRequest) {
         /**al crear una cuenta, se guarda un nuevo usuario con sus respectivos datos en la db,
@@ -130,6 +133,15 @@ public class UserServiceImpl implements UserService {
         userToCredit.setAccountBalance(userToCredit.getAccountBalance().add(request.getAmount()));
         userRepository.save(userToCredit);
 
+        //guardar transacción
+        TransactionDto transactionDto = TransactionDto.builder()
+                .accountNumber(userToCredit.getAccountNumber())
+                .transactionType("CREDIT")
+                .amount(request.getAmount())
+                .build();
+
+        transactionService.saveTransaction(transactionDto);
+
         return BankResponse.builder()
                 .responseCode(AccountUtils.ACCOUNT_CREDITED_SUCCESS)
                 .responseMessage(AccountUtils.ACCOUNT_CREDITED_SUCCESS_MESSAGE)
@@ -166,9 +178,20 @@ public class UserServiceImpl implements UserService {
                     .responseMessage(AccountUtils.INSUFFICIENT_BALANCE_MESSAGE)
                     .accountInfo(null)
                     .build();
-        } else {
+        }
+
+
+        else {
             userToDebit.setAccountBalance(userToDebit.getAccountBalance().subtract(request.getAmount()));
             userRepository.save(userToDebit);
+            TransactionDto transactionDto = TransactionDto.builder()
+                    .accountNumber(userToDebit.getAccountNumber())
+                    .transactionType("DEBIT")
+                    .amount(request.getAmount())
+                    .build();
+
+            transactionService.saveTransaction(transactionDto);
+
 
             return BankResponse.builder()
                     .responseCode(AccountUtils.ACCOUNT_DEBITED_SUCCESS)
@@ -184,7 +207,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BankResponse transfer(TransferRequest request) {
-        //abtener la cuenta a acreditar y verificar que exista
+        //obtener la cuenta a acreditar y verificar que exista
         //comprobar que la contidad que quiero debitar no sea mayor al saldo de la cuenta de origen (sourceAccount)
         //acreditar la cuenta
         //no se necesita comprobar que sourceAccount (la cuenta a debitar) exista porque el usuario está logueado (el usuario es la cuenta de origen)
@@ -229,12 +252,21 @@ public class UserServiceImpl implements UserService {
         userRepository.save(destinationAccountUser);
 
         EmailDetails creditAlert = EmailDetails.builder()
-                .subject("CREBIT ALERT")
+                .subject("CREDIT ALERT")
                 .recipient(sourceAccountUser.getEmail())
                 .messageBody("The sum of " + request.getAmount() + " has been sent to your account from " + sourceUsername + " Your current balance is " + destinationAccountUser.getAccountBalance())
                 .build();
 
-        emailService.sendEmailAlert(debitAlert);
+        emailService.sendEmailAlert(creditAlert);
+
+        TransactionDto transactionDto = TransactionDto.builder()
+                .accountNumber(destinationAccountUser.getAccountNumber())
+                .transactionType("CREDIT")
+                .amount(request.getAmount())
+                .build();
+
+        transactionService.saveTransaction(transactionDto);
+
 
         return BankResponse.builder()
                 .responseCode(AccountUtils.TRANSFER_SUCCESSFUL_CODE)
